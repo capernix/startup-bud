@@ -9,6 +9,10 @@ from langchain_community.tools import DuckDuckGoSearchResults
 from langchain_core.tools import Tool
 from langchain_core.output_parsers import StrOutputParser
 from duckduckgo_search import DDGS
+from langchain.agents import create_openai_tools_agent
+from langchain.agents import initialize_agent, AgentType, AgentExecutor
+from langchain.memory import ConversationBufferMemory
+from langchain_core.prompts.chat import  MessagesPlaceholder
 import os
 from dotenv import load_dotenv
 
@@ -22,7 +26,7 @@ llm = ChatGroq(model="llama-3.3-70b-versatile")
 
 def duckduckgo_search(query):
     with DDGS() as ddgs:
-        results = ddgs.text(query, max_results=5)  # Get top 5 results
+        results = ddgs.text(query, max_results=3)  # Get top 5 results
     return "\n".join([f"{r['title']} - {r['href']}\nSnippet: {r['body']}" for r in results])
 
 search_tool = Tool(
@@ -42,30 +46,43 @@ system = (
 prompt = ChatPromptTemplate(
     [
         ("system", system),
-        ("human", "{input},{history}")
+        ("human", "{input},{history}"),
+        MessagesPlaceholder("agent_scratchpad")
     ]
 )
-
 def system2():
     system2 = (
-        "You are a web researcher, the user is trying to validate their software startup idea. "
-        "Based on the user query, make 4 Search Engine Queries such that it tries to find similar websites or software and search according to them. "
-        "Then based on the metadata of the websites displayed validate the idea provided by the user."
+
+        """You are a web researcher, the user is trying to validate his software startup idea, Based on the user query, 
+        make 3 Search Engine Queries such that it tries to find similar websites or software and search according to them
+        Then based on the metadata of the websites displayed validate the idea provided by the user
+        also give the links to these websites,your main task is to find out if the users idea is actually valid and can be successful or not
+        so focus more on this aspect rather than the metadata of the websites"""
     )
-    prompt2 = ChatPromptTemplate([
-        ("system", system2),
-        ("human", "{input}")
-    ])
+    prompt2 = ChatPromptTemplate(
+        [
+            ("system",system2),
+            ("human","{input}"),
+            MessagesPlaceholder("agent_scratchpad")
+        ]
+    )
     return prompt2
 
 def get_chain():
-    chain = LLMChain(llm=llm, prompt=prompt)
-    return chain
-
+    memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+    chain = prompt|llm
+    # Initialize the agent with tool-calling capabilities
+    agentic=create_openai_tools_agent(llm=llm,prompt=prompt,tools=[search_tool])
+    agent1 = AgentExecutor(agent=agentic,memory=memory,tools=[search_tool],verbose=True)
+    return agent1
 def get_chain2():
-    prompt2 = system2()
-    chain2 = LLMChain(llm=llm, prompt=prompt2)
-    return chain2
+    prompt2=system2()
+    memory = ConversationBufferMemory(memory_key="history", return_messages=True)
+    chain2 = prompt2|llm
+    # Initialize the agent with tool-calling capabilities
+    agentic2 = create_openai_tools_agent(llm=llm,tools=[search_tool],prompt=prompt2)
+    agent2 = AgentExecutor(agent=agentic2,memory=memory,tools=[search_tool],verbose=True)
+    return agent2
 
 app = Flask(__name__)
 
@@ -98,9 +115,9 @@ def Chatot():
             else:
                 chain = get_chain()
             response = chain.invoke({"input": input, "history": Chat_history})
-            parsed = md.render(response["text"])  # Access the 'text' key in the dictionary
-            content = [parsed, input]
-            Chat_history.append((input, parsed))
+            # parsed = md.render(response["content"])  # Access the 'text' key in the dictionary
+            content = [response, input]
+            Chat_history.append((input, response))
             return render_template("page.html", content=content, history=Chat_history)
 
     return render_template("pagebase.html")

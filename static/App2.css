@@ -1,0 +1,102 @@
+/* Global styles */
+:root {
+  --primary-dark: #1500b1e7;
+  --primary-light: #000000;
+  --button-bg: rgba(25, 25, 75, 0.6);
+  --button-hover: rgba(35, 35, 85, 0.8);
+  --text-color: #ffffff;
+  --container-bg: rgba(25, 25, 75, 0.4);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(100deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+  min-height: 100vh;
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+/* .container {
+  width: 80vw;
+  padding: 20px;
+  background-color: var(--container-bg);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 100px;
+} */
+
+h1, h2 {
+  text-align: center;
+  margin: 20px 0;
+  color: var(--text-color);
+  font-size: 1.8rem;
+}
+
+/* Form styles */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 20px; /* Adjust margin as needed */
+}
+
+input, textarea, button {
+  padding: 0.75rem 1rem;
+  border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--button-bg);
+  color: var(--text-color);
+  font-size: 1rem;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(35, 35, 85, 0.7);
+}
+
+button {
+  cursor: pointer;
+  background-color: var(--button-bg);
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #000000;
+  transform: translateY(-2px);
+}
+
+/* Paragraph styles */
+p {
+  padding: 3px;
+  margin-bottom: 3px; /* Adjust margin as needed */
+}
+
+/* Responsive table styles if necessary */
+/* table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+th {
+  background-color: var(--button-bg);
+}
+tr:hover {
+  background-color: rgba(35, 35, 85, 0.3);
+} */

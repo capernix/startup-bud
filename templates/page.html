@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="../static/styles.css">
+            <title>Document</title>
+        </head>
+        <body>
+        <form action="/" method="post" enctype="multipart/form-data">
+            <label for="input">Ask anything:</label>
+            <input type="text" name="input" id="input">
+            <br><br>
+            <button type="submit" name="new_chat" value="true">New Chat</button>
+            <button type="submit" name="validate_idea" value="true">Validate Idea</button>
+            <input type="submit" value="Submit">
+
+            <div class="response-container">
+                {{ content[0] | safe }}
+        </body>
+        </html>
