@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+    <body>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <label for="input">Ask anything:</label>
+        <input type="text" name="input" id="input">
+        <br><br>
+        <input type="file" name="file" id="file">
+        <br><br>
+        <button type="submit" name="new_chat" value="true">New Chat</button>
+        <button type="submit" name="validate_idea" value="true">Validate Idea</button>
+        <input type="submit" value="Submit"> <!-- Add this line -->
+
+        <p><h3>Input: </h3> {{ content[1] | safe}}<br>
+        <h3>Chatbot:</h3> {{ content[0] | safe }}</p>
+        <h1>Chat History:</h1>
+        {% for entry in history %}
+        <p> <h3>User :</h3> {{ entry.0 }}<br>
+        <h3>Chatbot :</h3> {{ entry.1 | safe}}</p>
+        {% endfor %}
+    </form>
+    </body>
+    </html>
