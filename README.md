@@ -1,6 +1,3 @@
-I will create a README file for your repository that highlights the purpose, features, and technology stack used. Here is a sample README file:
-
----
 
 # Startup Bud
 
